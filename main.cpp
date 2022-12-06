@@ -140,3 +140,116 @@ bool letra(string character)
         return false;
     }
 }
+
+int main()
+{
+
+    string texto;
+    std::cout << "Entre com uma expressao:" << std::endl;
+    std::getline(cin, texto);
+
+    simbolosLexicos tabela;
+    string lexema = "";
+    int tamanhoLexema = 0;
+    string variavel = "";
+
+    int tamanhoVariavel = 0;
+    bool numReal = false;
+    int tamanhoExpressao = texto.length();
+
+    for (int i = 0; i < tamanhoExpressao; i++)
+    {
+
+        string character(1, texto.at(i));
+
+        if (delimitador(character) or operador(character))
+        {
+            if (tamanhoLexema > 0)
+            {
+                if (numReal)
+                {
+                    tabela.adicionarLexema(lexema, getToken("NUMR"));
+                }
+                else
+                {
+                    tabela.adicionarLexema(lexema, getToken("INT"));
+                }
+                lexema = "";
+                tamanhoLexema = 0;
+                variavel = "";
+                tamanhoVariavel = 0;
+                numReal = false;
+            }
+            else if (tamanhoVariavel > 0)
+            {
+                if (palavraReservada(variavel))
+                {
+                    tabela.adicionarLexema(variavel, getToken(variavel));
+                }
+                else
+                {
+                    tabela.adicionarLexema(variavel, getToken("ID"));
+                }
+                variavel = "";
+                tamanhoVariavel = 0;
+            }
+            if (character != " ")
+            {
+                tabela.adicionarLexema(character, getToken(character));
+                lexema = "";
+                variavel = "";
+                tamanhoVariavel = 0;
+                tamanhoLexema = 0;
+            }
+        }
+        else if (numerico(character))
+        {
+            lexema = lexema + character;
+            tamanhoLexema += 1;
+            if ((i + 1) == tamanhoExpressao)
+            {
+                if (numReal)
+                {
+                    tabela.adicionarLexema(lexema, getToken("NUMR"));
+                }
+                else
+                {
+                    tabela.adicionarLexema(lexema, getToken("INT"));
+                }
+            }
+        }
+        else if ((character == ".") or (character == ","))
+        {
+            numReal = true;
+            lexema = lexema + character;
+        }
+        else if (letra(character))
+        {
+            if ((i + 1) >= tamanhoExpressao)
+            {
+                variavel = variavel + character;
+                if (palavraReservada(character))
+                {
+                    tabela.adicionarLexema(lexema, getToken(character));
+                    variavel = "";
+                    tamanhoVariavel = 0;
+                }
+                else
+                {
+                    tabela.adicionarLexema(lexema, getToken("ID"));
+                    variavel = "";
+                    tamanhoVariavel = 0;
+                }
+            }
+            else
+            {
+                variavel = variavel + character;
+                tamanhoVariavel += 1;
+            }
+        }
+    }
+
+    tabela.print();
+    cout << "Terminou!" << endl;
+    return 0;
+}
