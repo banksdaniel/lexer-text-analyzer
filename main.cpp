@@ -11,8 +11,8 @@ struct Dicionario
 };
 
 static vector<string> operadores = {"+", "-", "/", "*", "!=", "==", "=", "<", "<=", ">", ">=", "++", "--", "<-"};
-static vector<string> palavrasReservadas = {"for", "if", "while", "E", "OU", "NAO"};
 static vector<string> delimitadores = {" ", "(", ")", ";"};
+static vector<string> palavrasReservadas = {"for", "if", "while", "E", "OU", "NAO"};
 
 static Dicionario valores[26] = {
     {"+", "OPSOMA"},
@@ -42,7 +42,7 @@ static Dicionario valores[26] = {
     {"OU", "PALAVRA RESERVADA"},
     {"NAO", "PALAVRA RESERVADA"}};
 
-class tabelaSimbolosLexico
+class simbolosLexicos
 {
 private:
     int id;
@@ -51,11 +51,11 @@ private:
     vector<string> token = {};
 
 public:
-    tabelaSimbolosLexico()
+    simbolosLexicos()
     {
         id = 1;
     }
-    void printar()
+    void print()
     {
         cout << "id\t\t\tLexema\t\t\tTipo de Token" << endl;
         for (int i = 0; i < identificador.size(); i++)
@@ -71,3 +71,72 @@ public:
         token.push_back(tokenSTR);
     };
 };
+
+bool operador(string character)
+{
+    if (std::find(operadores.begin(), operadores.end(), character) != operadores.end())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool delimitador(string character)
+{
+    if (std::find(delimitadores.begin(), delimitadores.end(), character) != delimitadores.end())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool palavraReservada(string character)
+{
+    if (std::find(palavrasReservadas.begin(), palavrasReservadas.end(), character) != palavrasReservadas.end())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+string getToken(string nome)
+{
+    for (int i = 0; i < 26; i++)
+    {
+        if (nome.compare(valores[i].token) == 0)
+        {
+            return valores[i].nome;
+        }
+    }
+}
+bool numerico(string character)
+{
+    if ((int(character.at(0)) >= 48) and (int(character.at(0)) <= 57))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+bool letra(string character)
+{
+    if ((int((character.at(0)) >= 65) and (int(character.at(0)) <= 90)) or ((int(character.at(0)) >= 96) and (int(character.at(0)) <= 122)))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
